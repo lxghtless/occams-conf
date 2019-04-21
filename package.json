@@ -1,0 +1,49 @@
+{
+  "name": "occams-conf",
+  "version": "1.0.0",
+  "description": "A simple config module",
+  "main": "index.js",
+  "files": [
+    "index.js"
+  ],
+  "scripts": {
+    "test": "npm run lint && nyc --reporter=lcov --reporter=text ava -v",
+    "lint": "xo --prettier --env=node --env=ava",
+    "lint-fix": "xo --fix --prettier --env=node --env=ava"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lxghtless/occams-config.git"
+  },
+  "keywords": [
+    "node",
+    "occams-config",
+    "config"
+  ],
+  "author": "lxghtless",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/lxghtless/occams-config/issues"
+  },
+  "homepage": "https://github.com/lxghtless/occams-config#readme",
+  "devDependencies": {
+    "ava": "^1.4.1",
+    "nyc": "^13.3.0",
+    "xo": "^0.24.0"
+  },
+  "dependencies": {},
+  "nyc": {
+    "include": [
+      "index.js"
+    ]
+  },
+  "ava": {
+    "files": [
+      "test/**/*test.js"
+    ]
+  },
+  "occams-config": {
+    "name": "config.js",
+    "path": "./"
+  }
+}
