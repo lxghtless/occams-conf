@@ -3,7 +3,7 @@
 A simple config module
 
 
-[![npm version](https://badge.fury.io/js/occams-config.svg)](https://badge.fury.io/js/occams-config)  [![CircleCI](https://circleci.com/gh/lxghtless/occams-config/tree/master.svg?style=svg)](https://circleci.com/gh/lxghtless/occams-config/tree/master)  [![codecov](https://codecov.io/gh/lxghtless/occams-config/branch/master/graph/badge.svg)](https://codecov.io/gh/lxghtless/occams-config)
+[![npm version](https://badge.fury.io/js/occams-conf.svg)](https://badge.fury.io/js/occams-conf)  [![CircleCI](https://circleci.com/gh/lxghtless/occams-config/tree/master.svg?style=svg)](https://circleci.com/gh/lxghtless/occams-config/tree/master)  [![codecov](https://codecov.io/gh/lxghtless/occams-config/branch/master/graph/badge.svg)](https://codecov.io/gh/lxghtless/occams-config)
 
 
 ### Why Occam's Config?
