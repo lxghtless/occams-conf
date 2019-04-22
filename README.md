@@ -1,4 +1,4 @@
-# occams-config
+# occams-conf
 
 A simple config module
 
@@ -15,7 +15,7 @@ A simple config module
 ### Install
 
 ```sh
-$ npm i occams-config -S
+$ npm i occams-conf -S
 ````
 
 
@@ -24,7 +24,7 @@ $ npm i occams-config -S
 > load main config via occams settings
 
 ```js
-const config = require('occams-config');
+const config = require('occams-conf');
 
 console.log(config.yourProp);
 ````
@@ -32,7 +32,7 @@ console.log(config.yourProp);
 > load another config merged with main
 
 ```js
-const config = require('occams-config').loadConfig({
+const config = require('occams-conf').loadConfig({
 	configName: 'otherConfig',
 	configPath: 'src'
 });
