@@ -13,7 +13,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/lxghtless/occams-config.git"
+    "url": "git+https://github.com/lxghtless/occams-conf.git"
   },
   "keywords": [
     "node",
@@ -23,9 +23,9 @@
   "author": "lxghtless",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/lxghtless/occams-config/issues"
+    "url": "https://github.com/lxghtless/occams-conf/issues"
   },
-  "homepage": "https://github.com/lxghtless/occams-config#readme",
+  "homepage": "https://github.com/lxghtless/occams-conf#readme",
   "devDependencies": {
     "ava": "^1.4.1",
     "nyc": "^13.3.0",
@@ -42,7 +42,7 @@
       "test/**/*test.js"
     ]
   },
-  "occams-config": {
+  "occams-conf": {
     "name": "config.js",
     "path": "./"
   }

@@ -2,10 +2,10 @@ const path = require('path');
 const fs = require('fs');
 
 const cwd = process.cwd();
-const occamsPackageNode = 'occams-config';
+const occamsPackageNode = 'occams-conf';
 const packageJsonPath = path.join(cwd, 'package.json');
-const occamsSettingsPath = path.join(cwd, 'occams.config.js');
-const occamsSettingsJsonPath = path.join(cwd, 'occams.config.json');
+const occamsSettingsPath = path.join(cwd, 'occams.conf.js');
+const occamsSettingsJsonPath = path.join(cwd, 'occams.conf.json');
 const defaultConfigPath = './';
 const defaultConfigName = 'config.js';
 
@@ -17,8 +17,8 @@ let occamsSettings;
 
 /**
 	Occams Settings Priority Order
-	1. occams.config.js
-	2. occams.config.json
+	1. occams.conf.js
+	2. occams.conf.json
 	3. package.json
 	4. default settings
 */
@@ -61,7 +61,7 @@ const loadConfig = ({configPath, configName}) => {
 		conf = require(configFilePath);
 		occamsConf = Object.assign(occamsConf, conf);
 	} catch (error) {
-		throw new Error(`No occams-config found at ${configFilePath}`);
+		throw new Error(`No occams-conf found at ${configFilePath}`);
 	}
 
 	return occamsConf;

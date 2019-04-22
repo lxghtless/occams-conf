@@ -48,7 +48,7 @@ console.log(config.otherProp);
 
 The following are options for defining occams config settings. They are loaded in priority order where if one is found, it overrides the rest.
 
-> 1. occams.config.js
+> 1. occams.conf.js
 
 _Must be located in cwd_
 
@@ -61,7 +61,7 @@ const conf = {
 module.exports = conf;
 ```
 
-> 2. occams.config.json
+> 2. occams.conf.json
 
 _Must be located in cwd_
 
@@ -76,7 +76,7 @@ _Must be located in cwd_
 
 
 ```json
-"occams-config": {
+"occams-conf": {
     "name": "config.js",
     "path": "src"
 }
