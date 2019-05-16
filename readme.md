@@ -1,11 +1,8 @@
-# occams-conf
+<img src=".github/assets/occams-conf-social-preview.png" alt="occams-conf" />
 
-A simple config module
+<p align="center">A simple config module</p>
 
-[![npm version](https://badge.fury.io/js/occams-conf.svg)](https://badge.fury.io/js/occams-conf)  [![CircleCI](https://circleci.com/gh/lxghtless/occams-conf/tree/master.svg?style=svg)](https://circleci.com/gh/lxghtless/occams-conf/tree/master)  [![codecov](https://codecov.io/gh/lxghtless/occams-conf/branch/master/graph/badge.svg)](https://codecov.io/gh/lxghtless/occams-conf) [![XO code style](https://img.shields.io/badge/code_style-XO-5ed9c7.svg)](https://github.com/xojs/xo)
-
-- version 1
-    + [docs](https://github.com/lxghtless/occams-conf/tree/v1.1.0)
+<p align="center">[![npm version](https://badge.fury.io/js/occams-conf.svg)](https://badge.fury.io/js/occams-conf)  [![CircleCI](https://circleci.com/gh/lxghtless/occams-conf/tree/master.svg?style=svg)](https://circleci.com/gh/lxghtless/occams-conf/tree/master)  [![codecov](https://codecov.io/gh/lxghtless/occams-conf/branch/master/graph/badge.svg)](https://codecov.io/gh/lxghtless/occams-conf) [![XO code style](https://img.shields.io/badge/code_style-XO-5ed9c7.svg)](https://github.com/xojs/xo)</p>
 
 ### Why Occam's Config?
 
@@ -13,6 +10,10 @@ A simple config module
 - No opinion of config file name or location
 - Load additional config files to merge properties
 - Load setting & config paths evaluated as `absolute, cwd path, walk back to root`
+
+> previous versions
+- version 1
+    + [docs](https://github.com/lxghtless/occams-conf/tree/v1.1.0)
 
 ### first things's first...
 
