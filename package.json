@@ -25,10 +25,7 @@
   "keywords": [
     "config"
   ],
-  "dependencies": {
-    "delay": "^4.2.0",
-    "p-forever": "^2.1.0"
-  },
+  "dependencies": {},
   "devDependencies": {
     "ava": "^1.4.1",
     "nyc": "^14.1.0",
