@@ -1,4 +1,5 @@
 module.exports = {
-	port: process.env.SERVER_PORT || 3000,
-	name: process.env.SERVER_NAME || 'test-name'
+	port: process.env.TEST_PORT || 3000,
+	name: process.env.TEST_NAME || 'demo',
+	resourceUrl: process.env.TEST_URL || 'https://reqres.in/api/apps'
 };

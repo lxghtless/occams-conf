@@ -2,22 +2,23 @@
 
 A simple config module
 
-
 [![npm version](https://badge.fury.io/js/occams-conf.svg)](https://badge.fury.io/js/occams-conf)  [![CircleCI](https://circleci.com/gh/lxghtless/occams-conf/tree/master.svg?style=svg)](https://circleci.com/gh/lxghtless/occams-conf/tree/master)  [![codecov](https://codecov.io/gh/lxghtless/occams-conf/branch/master/graph/badge.svg)](https://codecov.io/gh/lxghtless/occams-conf) [![XO code style](https://img.shields.io/badge/code_style-XO-5ed9c7.svg)](https://github.com/xojs/xo)
 
+- version 1
+    + [docs](https://github.com/lxghtless/occams-conf/tree/v1.1.0)
 
 ### Why Occam's Config?
 
 - Encourages [Build Once Run Anywhere](https://forums.docker.com/t/build-once-run-anywhere-concept/3522) Node.js Containers via `-e` paramerters in run command
-- No opinion on config file name or relative path location
-- Load additional config files to merge new properties
+- No opinion of config file name or location
+- Load additional config files to merge properties
+- Load setting & config paths evaluated as `absolute, cwd path, walk back to root`
 
-### Install
+### first things's first...
 
 ```sh
 $ npm i occams-conf -S
-````
-
+```
 
 ### Usage
 
@@ -27,30 +28,42 @@ $ npm i occams-conf -S
 const config = require('occams-conf');
 
 console.log(config.yourProp);
-````
+```
 
 > load another config merged with main
 
 ```js
 const config = require('occams-conf').loadConfig({
 	configName: 'otherConfig',
-	configPath: 'src'
+	configPath: 'src',
+    baseDir: process.cwd()
 });
 
 console.log(config.yourProp);
 console.log(config.otherProp);
-````
+```
 
-### Occam's Settings Configuration
+### Occam's Settings
 
 - name (config file name) [String]
-- path (config file relative directory path) [String]
+- path (config path) [String] <b>evaluated as</b> `absolute, cwd path, walk back to root` in order.
 
-The following are options for defining occams config settings. They are loaded in priority order where if one is found, it overrides the rest.
+### `occams-conf` settings file
 
-> 1. occams.conf.js
+Any of these will work. Resolves first one it finds.
 
-_Must be located in cwd_
+> package.json
+
+```json
+}
+    "occams-conf": {
+        "name": "config.js",
+        "path": "src"
+    }
+}
+```
+
+> occams.conf.js
 
 ```js
 const conf = {
@@ -61,41 +74,26 @@ const conf = {
 module.exports = conf;
 ```
 
-> 2. occams.conf.json
+> occams.conf.json
 
-_Must be located in cwd_
-
-```js
+```json
 {
     "name": "config.js",
     "path": "src"
 }
 ```
 
-> 3. package.json
-
-
-```json
-"occams-conf": {
-    "name": "config.js",
-    "path": "src"
-}
-```
-
-> 4. default
+> default
 
 - name: `config.js`
 - path: `./`
 
-
-### Example config file
+### Example `config.js`
 
 ```js
-const conf = {
-	port: process.env.API_PORT || 3000,
-	resourceUrl: process.env.RESOURCE_URL || 'http://resource.com',
-	mySecret: process.env.MY_SECRET
+module.exports = {
+    port: process.env.TEST_PORT || 8011,
+    name: process.env.TEST_NAME || 'starlord',
+    resourceUrl: process.env.TEST_URL || 'https://reqres.in/api/mixtapes'
 };
-
-module.exports = conf;
 ```
