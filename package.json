@@ -13,40 +13,30 @@
     "node": ">=8"
   },
   "scripts": {
-    "test": "xo && nyc ava",
-    "test-sys": "ava 'sys-test/**/test.js' 'sys-test/**/*.test.js'",
-    "test-all": "ava 'sys-test/**/test.js' 'sys-test/**/*.test.js' 'test/**/test.js' 'test/**/*.test.js'",
-    "test-sys-with-coverage": "nyc ava 'sys-test/**/test.js' 'sys-test/**/*.test.js'",
-    "test-all-with-coverage": "nyc ava 'sys-test/**/test.js' 'sys-test/**/*.test.js' 'test/**/test.js' 'test/**/*.test.js'"
+    "start": "node -r dotenv/config src/index.js",
+    "test": "xo && nyc ava"
   },
+  "main": "src/index.js",
   "files": [
-    "index.js"
+    "src"
   ],
   "keywords": [
     "config"
   ],
-  "dependencies": {},
+  "dependencies": {
+    "find-up": "^4.1.0",
+    "is-installed-globally": "^0.3.1",
+    "is-url-superb": "^3.0.0"
+  },
   "devDependencies": {
     "ava": "^2.4.0",
+    "dotenv": "^8.2.0",
     "nyc": "^14.1.1",
-    "xo": "^0.25.3",
-    "set-value": "^3.0.1",
-    "handlebars": "^4.4.0"
+    "xo": "^0.25.3"
   },
   "xo": {
-    "plugins": [
-      "unicorn"
-    ],
     "rules": {
-      "unicorn/filename-case": [
-        "error",
-        {
-          "case": "camelCase"
-        }
-      ],
-      "camelcase": 0,
-      "capitalized-comments": 0,
-      "ava/no-ignored-test-files": 0
+      "capitalized-comments": 0
     }
   },
   "ava": {
@@ -56,12 +46,15 @@
     "cache": true,
     "concurrency": 5,
     "failFast": true,
-    "verbose": true
+    "verbose": true,
+    "environmentVariables": {
+      "OCCAMS_CONF_MANUAL_INIT": "true"
+    }
   },
   "nyc": {
     "all": true,
     "include": [
-      "index.js"
+      "src/**/*.js"
     ],
     "reporter": [
       "text",
@@ -69,6 +62,7 @@
     ]
   },
   "occams-conf": {
+    "path": null,
     "name": "config.js"
   }
 }
