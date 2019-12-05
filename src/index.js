@@ -12,7 +12,6 @@ if (!ctxClient.manualInitMode) {
 			await ctx.init();
 			log.debug(ctx.get());
 		} catch (error) {
-			console.error(error);
 			log.error(error);
 		}
 	})();
