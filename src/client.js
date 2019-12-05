@@ -134,6 +134,11 @@ module.exports = context => ({
 
 		return this;
 	},
+	async loadConfig(locatorConfig) {
+		await this.setConfig(locatorConfig);
+		await this.write();
+		return this.get();
+	},
 	async init() {
 		log.debug('client init called');
 		await this.setLocatorConfig();

@@ -1,17 +1,15 @@
 const context = require('./context');
 const log = require('./logger');
 
-const {ClientSymbol, InitSymbol} = context;
-
 // initialize context client
-const ctx = context()[InitSymbol]();
-const ctxClient = ctx[ClientSymbol];
+const ctx = context()[context.InitSymbol]();
+const ctxClient = ctx[context.ClientSymbol];
 
 // if not manual mode, attempt to init immediately
 if (!ctxClient.manualInitMode) {
 	(async () => {
 		try {
-			await ctxClient.init();
+			await ctx.init();
 			log.debug(ctx.get());
 		} catch (error) {
 			console.error(error);
@@ -21,4 +19,4 @@ if (!ctxClient.manualInitMode) {
 }
 
 module.exports = ctx;
-module.exports.ClientSymbol = ClientSymbol;
+module.exports.ClientSymbol = context.ClientSymbol;
