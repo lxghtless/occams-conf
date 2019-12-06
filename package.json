@@ -13,7 +13,7 @@
     "node": ">=8"
   },
   "scripts": {
-    "start": "node --experimental-vm-modules -r dotenv/config src/index.js",
+    "start": "node -r dotenv/config src/index.js",
     "test": "xo && nyc ava"
   },
   "main": "src/index.js",
