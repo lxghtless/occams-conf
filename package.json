@@ -13,7 +13,7 @@
     "node": ">=8"
   },
   "scripts": {
-    "start": "node -r dotenv/config src/index.js",
+    "start": "node --experimental-vm-modules -r dotenv/config src/index.js",
     "test": "xo && nyc ava"
   },
   "main": "src/index.js",
@@ -26,7 +26,8 @@
   "dependencies": {
     "find-up": "^4.1.0",
     "is-installed-globally": "^0.3.1",
-    "is-url-superb": "^3.0.0"
+    "is-url-superb": "^3.0.0",
+    "require-from-string": "^2.0.2"
   },
   "devDependencies": {
     "ava": "^2.4.0",
@@ -62,7 +63,6 @@
     ]
   },
   "occams-conf": {
-    "path": null,
-    "name": "config.js"
+    "path": "https://raw.githubusercontent.com/lxghtless/occams-conf/v2.0.1/config.js"
   }
 }

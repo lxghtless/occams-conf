@@ -1,5 +1,6 @@
-const {homedir: getUserHome} = require('os');
 const {join, isAbsolute} = require('path');
+const {homedir: getUserHome} = require('os');
+const requireFromString = require('require-from-string');
 const isUrl = require('is-url-superb');
 const log = require('./logger');
 const loader = require('./loader');
@@ -16,54 +17,64 @@ const {
 const DEFAULT_CONFIG_FILE_NAME = 'config.js';
 
 const parseLocatorConfig = (locatorConfigFilePath, locatorConfigGetter) => {
-	log.debug('using jsonParse to parse locatorConfig');
-	const locatorConfig = jsonParse(locatorConfigGetter());
+	let locatorConfig;
 
-	if (locatorConfigFilePath.includes('package.json')) {
-		log.debug('locatorConfig detected as package.json');
-		log.debug('locatorConfig-occams-conf', locatorConfig['occams-conf']);
-		return locatorConfig['occams-conf'];
+	if (locatorConfigFilePath.endsWith('.json')) {
+		log.debug('locatorConfigFilePath async detected as json from path');
+		locatorConfig = jsonParse(locatorConfigGetter());
+		if (locatorConfigFilePath.endsWith('package.json')) {
+			locatorConfig = locatorConfig['occams-conf'];
+		}
+	} else {
+		log.debug('locatorConfigFilePath async detected as module from path');
+		locatorConfig = require(locatorConfigFilePath);
 	}
 
 	return locatorConfig;
 };
 
 const parseLocatorConfigAsync = async (locatorConfigFilePath, locatorConfigGetter) => {
-	let locatorConfig;
-
 	if (isUrl(locatorConfigFilePath)) {
-		log.debug('using jsonParse with await to parse locatorConfig');
-		locatorConfig = jsonParse(await locatorConfigGetter());
+		if (locatorConfigFilePath.endsWith('.json')) {
+			log.debug('locatorConfigFilePath async detected as json from url');
+			const lcJson = jsonParse(await locatorConfigGetter());
+			if (locatorConfigFilePath.endsWith('package.json')) {
+				return lcJson['occams-conf'];
+			}
+
+			return lcJson;
+		}
+
+		log.debug('locatorConfigFilePath async detected as module from url');
+		return requireFromString(await locatorConfigGetter());
 	}
 
-	if (!locatorConfig) {
-		log.debug('using jsonParse to parse locatorConfig');
-		locatorConfig = jsonParse(locatorConfigGetter());
-	}
-
-	if (locatorConfigFilePath.includes('package.json')) {
-		log.debug('locatorConfig detected as package.json');
-		log.debug('locatorConfig-occams-conf', locatorConfig['occams-conf']);
-		return locatorConfig['occams-conf'];
-	}
-
-	return locatorConfig;
+	return parseLocatorConfig(locatorConfigFilePath, locatorConfigGetter);
 };
 
 const parseConfig = (configPath, configGetter) => {
 	if (isLocalModule(configPath)) {
+		log.debug('configPath detected as local module');
 		return require(configPath);
 	}
 
+	log.debug('configPath detected as json');
 	return jsonParse(configGetter());
 };
 
 const parseConfigAsync = async (configPath, configGetter) => {
-	if (isLocalModule(configPath)) {
-		return require(configPath);
+	if (isUrl(configPath)) {
+		if (configPath.endsWith('.json')) {
+			log.debug('configPath async detected as json from url');
+			return jsonParse(await configGetter());
+		}
+
+		log.debug('configPath async detected as module from url');
+		const jsModuleText = await configGetter();
+		return requireFromString(jsModuleText);
 	}
 
-	return jsonParse(await configGetter());
+	return parseConfig(configPath, configGetter);
 };
 
 module.exports = context => ({
@@ -195,7 +206,7 @@ module.exports = context => ({
 	},
 	async loadConfig(locatorConfig) {
 		log.debug('client loadConfig called');
-		await this.setConfig(locatorConfig);
+		await this.setConfigAsync(locatorConfig);
 		await this.write();
 		return this.get();
 	},
@@ -214,6 +225,17 @@ module.exports = context => ({
 		}
 
 		this.setLocatorConfig(locatorConfigPath);
+		this.setConfigPath();
+
+		if (isUrl(this.configPath)) {
+			const initAsync = async () => {
+				await this.setConfigAsync();
+				return this.write();
+			};
+
+			return initAsync();
+		}
+
 		this.setConfig();
 		return this.write();
 	},

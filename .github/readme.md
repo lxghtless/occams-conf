@@ -6,19 +6,22 @@
 
 ### Why Occam's Config?
 
-- Encourages [Build Once Run Anywhere](https://forums.docker.com/t/build-once-run-anywhere-concept/3522) Node.js Containers via `-e` paramerters in run command
+- Encourages [Build Once Run Anywhere](https://forums.docker.com/t/build-once-run-anywhere-concept/3522) Node.js App Containers
 - No opinion of config file name or location
 - Load additional config files to merge properties
-- Load setting & config paths evaluated as `absolute, cwd path, walk back to root`
+- Load configs from https endpoints
 
 > previous versions
+
 - version 1
     + [docs](https://github.com/lxghtless/occams-conf/tree/v1.1.0)
+- version 2
+    + [docs](https://github.com/lxghtless/occams-conf/tree/v2.0.1)
 
 ### first things's first...
 
 ```sh
-$ npm i occams-conf -S
+$ npm i occams-conf
 ```
 
 ### Usage
@@ -34,46 +37,50 @@ console.log(config.yourProp);
 > load another config merged with main
 
 ```js
-const config = require('occams-conf').loadConfig({
-	configName: 'otherConfig',
-	configPath: 'src',
-    baseDir: process.cwd()
+const config = require('occams-conf');
+config.loadConfig({
+    name: 'other-config.js',
+    path: 'src'
 });
 
 console.log(config.yourProp);
 console.log(config.otherProp);
 ```
 
-### Occam's Settings
-
-- name (config file name) [String]
-- path (config path) [String] <b>evaluated as</b> `absolute, cwd path, walk back to root` in order.
-
-### `occams-conf` settings file
-
-Any of these will work. Resolves first one it finds.
-
-> package.json
-
-```json
-}
-    "occams-conf": {
-        "name": "config.js",
-        "path": "src"
-    }
-}
-```
-
-> occams.conf.js
+> load config from https url with loaderConfig
 
 ```js
-const conf = {
-	name: 'config.js',
-    path: 'src'
-};
+// example loaderConfig:
+// {
+//     "path": "https://raw.githubusercontent.com/lxghtless/occams-conf/v2.0.1/config.js"
+// }
+const config = require('occams-conf');
 
-module.exports = conf;
+(async () => {
+    await config.init();
+    console.log(config.resourceUrl);
+});
 ```
+
+> load config from https url with loadConfig method
+
+```js
+const config = require('occams-conf');
+
+(async () => {
+    await config.loadConfig({
+        path: 'https://raw.githubusercontent.com/lxghtless/occams-conf/v2.0.1/config.js'
+    });
+    console.log(config.resourceUrl);
+});
+```
+
+### `occams-conf` settings file (aka locatorConfig)
+
+- name (config file name) [String]
+- path (config path) [String]
+
+Any of these will work and will resolve the first one found in this order.
 
 > occams.conf.json
 
@@ -84,10 +91,32 @@ module.exports = conf;
 }
 ```
 
+> occams.conf.js
+
+```js
+const conf = {
+    name: 'config.js',
+    path: 'src'
+};
+
+module.exports = conf;
+```
+
+> package.json
+
+```json
+{
+    "occams-conf": {
+        "name": "config.js",
+        "path": "src"
+    }
+}
+```
+
 > default
 
 - name: `config.js`
-- path: `./`
+- path: `$HOME directory if globally installed || cwd`
 
 ### Example `config.js`
 
