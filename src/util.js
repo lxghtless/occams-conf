@@ -1,6 +1,9 @@
+const {existsSync, lstatSync} = require('fs');
 const {join, dirname} = require('path');
 const findUp = require('find-up');
 const isUrl = require('is-url-superb');
+
+const isDirectory = path => existsSync(path) && lstatSync(path).isDirectory();
 
 const jsonParse = json => JSON.parse(json);
 
@@ -56,6 +59,7 @@ module.exports = {
 	get,
 	getGlobal,
 	getLocatorConfigFilePath,
+	isDirectory,
 	isGloballyInstalled
 };
 

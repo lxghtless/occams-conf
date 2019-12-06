@@ -8,9 +8,12 @@ const {
 	get,
 	getGlobal,
 	getLocatorConfigFilePath,
+	isDirectory,
 	isGloballyInstalled,
 	jsonParse
 } = require('./util');
+
+const DEFAULT_CONFIG_FILE_NAME = 'config.js';
 
 const parseLocatorConfig = (locatorConfigFilePath, locatorConfigGetter) => {
 	log.debug('using jsonParse to parse locatorConfig');
@@ -65,7 +68,6 @@ const parseConfigAsync = async (configPath, configGetter) => {
 
 module.exports = context => ({
 	loader: loader(),
-	// This path overrides the path
 	configPathOverride: getGlobal(['env', 'OCCAMS_CONF_CONFIG_FILE_PATH']),
 	manualInitMode: getGlobal(['env', 'OCCAMS_CONF_MANUAL_INIT']) === 'true',
 	isDevelopmentMode: getGlobal(['env', 'OCCAMS_CONF_ENV']) === 'development',
@@ -73,8 +75,6 @@ module.exports = context => ({
 	locatorConfigFilePath: null,
 	configPath: null,
 	keyPathTracker: new Set(),
-	// The locatorConfigPath is the path to the directory containing the occams-conf
-	// configuration file (i.e. occams.conf.js, occams.conf.json, package.json)
 	setLocatorConfigFilePath(path) {
 		let locatorConfigFilePath = path;
 
@@ -122,12 +122,11 @@ module.exports = context => ({
 		if (!path && !name) {
 			if (isGloballyInstalled()) {
 				log.debug('module detected as globally installed');
-				configPath = join(getUserHome(), 'config.js');
+				configPath = join(getUserHome(), DEFAULT_CONFIG_FILE_NAME);
 				log.debug(`global module config path: ${configPath}`);
 			} else {
-				log.debug(`${configPath} detected as absolute`);
-				// TODO: get default  base from util
-				configPath = join(process.cwd(), 'config.js');
+				log.debug(`${configPath} detected as locally installed`);
+				configPath = join(process.cwd(), DEFAULT_CONFIG_FILE_NAME);
 			}
 		}
 
@@ -137,20 +136,23 @@ module.exports = context => ({
 				log.debug(`${configPath} detected as absolute`);
 			} else {
 				log.debug(`${configPath} detected as relative`);
-				// TODO: get default  base from util
 				configPath = join(process.cwd(), configPath);
 			}
 		}
 
 		if (!configPath && path) {
-			// TODO: check if path is a file path or dir
-			// if file return path
-			// if dir return path + (default config file name) (i.e. config.js)
-			configPath = path;
+			if (isDirectory(path)) {
+				configPath = join(path, DEFAULT_CONFIG_FILE_NAME);
+			} else {
+				configPath = path;
+			}
 		}
 
 		if (!configPath) {
 			configPath = join(process.cwd(), name);
+			if (isDirectory(configPath)) {
+				configPath = join(configPath, DEFAULT_CONFIG_FILE_NAME);
+			}
 		}
 
 		this.configPath = configPath;
@@ -217,7 +219,7 @@ module.exports = context => ({
 	},
 	get(keyPath) {
 		log.debug(`client get called with ${keyPath}`);
-		// if no keyPath, then return just the loaded config keys
+
 		if (!keyPath) {
 			const partial = {};
 			for (const kp of this.keyPathTracker) {
