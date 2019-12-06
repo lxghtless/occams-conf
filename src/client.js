@@ -1,5 +1,5 @@
 const {homedir: getUserHome} = require('os');
-const {join} = require('path');
+const {join, isAbsolute} = require('path');
 const isUrl = require('is-url-superb');
 const log = require('./logger');
 const loader = require('./loader');
@@ -12,25 +12,50 @@ const {
 	jsonParse
 } = require('./util');
 
-const parseLocatorConfig = async (locatorConfigFilePath, locatorConfigGetter) => {
-	let locatorConfig;
-
-	if (isUrl(locatorConfigFilePath)) {
-		locatorConfig = jsonParse(await locatorConfigGetter());
-	}
-
-	if (!locatorConfig) {
-		locatorConfig = jsonParse(locatorConfigGetter());
-	}
+const parseLocatorConfig = (locatorConfigFilePath, locatorConfigGetter) => {
+	log.debug('using jsonParse to parse locatorConfig');
+	const locatorConfig = jsonParse(locatorConfigGetter());
 
 	if (locatorConfigFilePath.includes('package.json')) {
+		log.debug('locatorConfig detected as package.json');
+		log.debug('locatorConfig-occams-conf', locatorConfig['occams-conf']);
 		return locatorConfig['occams-conf'];
 	}
 
 	return locatorConfig;
 };
 
-const parseConfig = async (configPath, configGetter) => {
+const parseLocatorConfigAsync = async (locatorConfigFilePath, locatorConfigGetter) => {
+	let locatorConfig;
+
+	if (isUrl(locatorConfigFilePath)) {
+		log.debug('using jsonParse with await to parse locatorConfig');
+		locatorConfig = jsonParse(await locatorConfigGetter());
+	}
+
+	if (!locatorConfig) {
+		log.debug('using jsonParse to parse locatorConfig');
+		locatorConfig = jsonParse(locatorConfigGetter());
+	}
+
+	if (locatorConfigFilePath.includes('package.json')) {
+		log.debug('locatorConfig detected as package.json');
+		log.debug('locatorConfig-occams-conf', locatorConfig['occams-conf']);
+		return locatorConfig['occams-conf'];
+	}
+
+	return locatorConfig;
+};
+
+const parseConfig = (configPath, configGetter) => {
+	if (isLocalModule(configPath)) {
+		return require(configPath);
+	}
+
+	return jsonParse(configGetter());
+};
+
+const parseConfigAsync = async (configPath, configGetter) => {
 	if (isLocalModule(configPath)) {
 		return require(configPath);
 	}
@@ -67,14 +92,25 @@ module.exports = context => ({
 
 		return this;
 	},
-	async setLocatorConfig(path) {
+	setLocatorConfig(path) {
 		this.setLocatorConfigFilePath(path);
-		this.locatorConfig = await parseLocatorConfig(
+		this.locatorConfig = parseLocatorConfig(
 			this.locatorConfigFilePath,
 			() => this.loader.loadByPath(this.locatorConfigFilePath)
 		);
 
-		// log.debug(`set locatorConfig: ${JSON.stringify(this.locatorConfig)}`);
+		log.debug(`set locatorConfig: ${JSON.stringify(this.locatorConfig)}`);
+
+		return this;
+	},
+	async setLocatorConfigAsync(path) {
+		this.setLocatorConfigFilePath(path);
+		this.locatorConfig = await parseLocatorConfigAsync(
+			this.locatorConfigFilePath,
+			() => this.loader.loadByPath(this.locatorConfigFilePath)
+		);
+
+		log.debug(`set locatorConfigAsync: ${JSON.stringify(this.locatorConfig)}`);
 
 		return this;
 	},
@@ -85,15 +121,25 @@ module.exports = context => ({
 
 		if (!path && !name) {
 			if (isGloballyInstalled()) {
+				log.debug('module detected as globally installed');
 				configPath = join(getUserHome(), 'config.js');
+				log.debug(`global module config path: ${configPath}`);
 			} else {
-				// TODO: get default from util
+				log.debug(`${configPath} detected as absolute`);
+				// TODO: get default  base from util
 				configPath = join(process.cwd(), 'config.js');
 			}
 		}
 
 		if (!configPath && path && name) {
-			configPath = `${path}${name}`;
+			configPath = join(path, name);
+			if (isAbsolute(configPath)) {
+				log.debug(`${configPath} detected as absolute`);
+			} else {
+				log.debug(`${configPath} detected as relative`);
+				// TODO: get default  base from util
+				configPath = join(process.cwd(), configPath);
+			}
 		}
 
 		if (!configPath && path) {
@@ -113,21 +159,32 @@ module.exports = context => ({
 
 		return this;
 	},
-	async setConfig(locatorConfig = this.locatorConfig) {
+	setConfig(locatorConfig = this.locatorConfig) {
 		this.setConfigPath(locatorConfig);
-		this.config = await parseConfig(
+		this.config = parseConfig(
 			this.configPath,
 			() => this.loader.loadByPath(this.configPath)
 		);
 
-		// log.debug(`set config: ${JSON.stringify(this.config)}`);
+		log.debug('client setConfig complete');
+
+		return this;
+	},
+	async setConfigAsync(locatorConfig = this.locatorConfig) {
+		this.setConfigPath(locatorConfig);
+		this.config = await parseConfigAsync(
+			this.configPath,
+			() => this.loader.loadByPath(this.configPath)
+		);
+
+		log.debug('client setConfigAsync complete');
 
 		return this;
 	},
 	write(config = this.config) {
 		log.debug('client write called');
 		for (const ck of Object.keys(config)) {
-			log.debug(`client write context key: {${ck}: "${config[ck]}"}`);
+			log.debug(`context partial "${ck}" written`);
 			context[ck] = config[ck];
 			this.keyPathTracker.add(ck);
 		}
@@ -135,17 +192,31 @@ module.exports = context => ({
 		return this;
 	},
 	async loadConfig(locatorConfig) {
+		log.debug('client loadConfig called');
 		await this.setConfig(locatorConfig);
 		await this.write();
 		return this.get();
 	},
-	async init() {
+	init(locatorConfigPath) {
 		log.debug('client init called');
-		await this.setLocatorConfig();
-		await this.setConfig();
+		this.setLocatorConfigFilePath(locatorConfigPath);
+
+		if (isUrl(this.locatorConfigFilePath)) {
+			const initAsync = async () => {
+				await this.setLocatorConfigAsync(locatorConfigPath);
+				await this.setConfigAsync();
+				return this.write();
+			};
+
+			return initAsync();
+		}
+
+		this.setLocatorConfig(locatorConfigPath);
+		this.setConfig();
 		return this.write();
 	},
 	get(keyPath) {
+		log.debug(`client get called with ${keyPath}`);
 		// if no keyPath, then return just the loaded config keys
 		if (!keyPath) {
 			const partial = {};
@@ -167,7 +238,4 @@ module.exports = context => ({
 
 		return get(keyPathArray, context);
 	}
-	// TODO: impl assoc path functionality
-	// set(keyPath, value) {
-	// }
 });

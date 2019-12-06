@@ -1,11 +1,7 @@
 const fs = require('fs');
-// const {promisify} = require('util');
 const https = require('https');
 const isUrl = require('is-url-superb');
-
-// const readFileAsync = promisify(fs.readFile);
-
-// const fsLoader = path => readFileAsync(path);
+const log = require('./logger');
 
 const urlLoader = path => {
 	return new Promise((resolve, reject) => {
@@ -27,6 +23,7 @@ const urlLoader = path => {
 
 module.exports = () => ({
 	loadByPath(path) {
+		log.debug('loading by path', path);
 		if (isUrl(path)) {
 			return urlLoader(path);
 		}

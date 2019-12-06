@@ -5,12 +5,21 @@ const log = require('./logger');
 const ctx = context()[context.InitSymbol]();
 const ctxClient = ctx[context.ClientSymbol];
 
+const isPromise = object => {
+	if (Promise && Promise.resolve) {
+		return Promise.resolve(object) === object;
+	}
+
+	return false;
+};
+
 // if not manual mode, attempt to init immediately
 if (!ctxClient.manualInitMode) {
-	(async () => {
+	(() => {
 		try {
-			await ctx.init();
-			log.debug(ctx.get());
+			const initialization = ctx.init();
+			const initIsPromise = isPromise(initialization);
+			log.debug(`auto init detected as ${initIsPromise ? 'async' : 'sync'}`);
 		} catch (error) {
 			log.error(error);
 		}
