@@ -2,7 +2,7 @@
 
 <p align="center">A simple config module</p>
 
-![npm](https://img.shields.io/npm/v/occams-conf.svg) [![CircleCI](https://circleci.com/gh/lxghtless/occams-conf/tree/master.svg?style=svg)](https://circleci.com/gh/lxghtless/occams-conf/tree/master)  [![codecov](https://codecov.io/gh/lxghtless/occams-conf/branch/master/graph/badge.svg)](https://codecov.io/gh/lxghtless/occams-conf) [![XO code style](https://img.shields.io/badge/code_style-XO-5ed9c7.svg)](https://github.com/xojs/xo)
+[![npm version](https://badge.fury.io/js/occams-conf.svg)](https://badge.fury.io/js/occams-conf) [![CircleCI](https://circleci.com/gh/lxghtless/occams-conf/tree/master.svg?style=svg)](https://circleci.com/gh/lxghtless/occams-conf/tree/master)  [![codecov](https://codecov.io/gh/lxghtless/occams-conf/branch/master/graph/badge.svg)](https://codecov.io/gh/lxghtless/occams-conf) [![XO code style](https://img.shields.io/badge/code_style-XO-5ed9c7.svg)](https://github.com/xojs/xo)
 
 ### Why Occam's Config?
 
