@@ -1,11 +1,18 @@
 const fs = require('fs');
+const http = require('http');
 const https = require('https');
 const isUrl = require('is-url-superb');
 const log = require('./logger');
 
 const urlLoader = path => {
+	let client = https;
+
+	if (path.split(':')[0].toLowerCase() === 'http') {
+		client = http;
+	}
+
 	return new Promise((resolve, reject) => {
-		https.get(path, resp => {
+		client.get(path, resp => {
 			let data = '';
 
 			resp.on('data', chunk => {

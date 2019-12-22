@@ -35,6 +35,7 @@ if (loggerModuleName) {
 	} catch (error) {
 		logger = createBasicLogger();
 		logger.error('occams-conf error while loading logger module.', error);
+		logger.info('occams-conf falling back to basic logger');
 	}
 } else {
 	logger = createBasicLogger();

@@ -4,4 +4,4 @@ yarn.lock
 coverage
 .DS_Store
 .env
-notes.md
+.vscode

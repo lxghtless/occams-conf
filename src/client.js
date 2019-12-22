@@ -16,6 +16,17 @@ const {
 
 const DEFAULT_CONFIG_FILE_NAME = 'config.js';
 
+const resolveFullModulePath = modulePath => {
+	if (!isAbsolute(modulePath)) {
+		return join(
+			// CONSIDERATION: abstract getting default base to enable configuration of this value
+			process.cwd(),
+			modulePath);
+	}
+
+	return modulePath;
+};
+
 const parseLocatorConfig = (locatorConfigFilePath, locatorConfigGetter) => {
 	let locatorConfig;
 
@@ -23,11 +34,12 @@ const parseLocatorConfig = (locatorConfigFilePath, locatorConfigGetter) => {
 		log.debug('locatorConfigFilePath async detected as json from path');
 		locatorConfig = jsonParse(locatorConfigGetter());
 		if (locatorConfigFilePath.endsWith('package.json')) {
-			locatorConfig = locatorConfig['occams-conf'];
+			locatorConfig = locatorConfig['occams-conf'] || {};
 		}
 	} else {
 		log.debug('locatorConfigFilePath async detected as module from path');
-		locatorConfig = require(locatorConfigFilePath);
+		const modulePath = resolveFullModulePath(locatorConfigFilePath);
+		return require(modulePath);
 	}
 
 	return locatorConfig;
@@ -55,7 +67,8 @@ const parseLocatorConfigAsync = async (locatorConfigFilePath, locatorConfigGette
 const parseConfig = (configPath, configGetter) => {
 	if (isLocalModule(configPath)) {
 		log.debug('configPath detected as local module');
-		return require(configPath);
+		const modulePath = resolveFullModulePath(configPath);
+		return require(modulePath);
 	}
 
 	log.debug('configPath detected as json');
@@ -207,7 +220,7 @@ module.exports = context => ({
 	async loadConfig(locatorConfig) {
 		log.debug('client loadConfig called');
 		await this.setConfigAsync(locatorConfig);
-		await this.write();
+		this.write();
 		return this.get();
 	},
 	init(locatorConfigPath) {
@@ -216,7 +229,7 @@ module.exports = context => ({
 
 		if (isUrl(this.locatorConfigFilePath)) {
 			const initAsync = async () => {
-				await this.setLocatorConfigAsync(locatorConfigPath);
+				await this.setLocatorConfigAsync(this.locatorConfigFilePath);
 				await this.setConfigAsync();
 				return this.write();
 			};
@@ -224,7 +237,7 @@ module.exports = context => ({
 			return initAsync();
 		}
 
-		this.setLocatorConfig(locatorConfigPath);
+		this.setLocatorConfig(this.locatorConfigFilePath);
 		this.setConfigPath();
 
 		if (isUrl(this.configPath)) {
