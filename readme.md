@@ -127,3 +127,33 @@ module.exports = {
     resourceUrl: process.env.TEST_URL || 'https://reqres.in/api/mixtapes'
 };
 ```
+
+### Windows Users
+
+If and error resembling the following occurs, please check out the link below it.
+
+```shell
+PS C:\src\{projectfolder}> npm start
+
+> file-sage@1.0.0 start C:\src\{projectfolder}
+> node src/index.js
+
+Error: ENOENT: no such file or directory, lstat 'C:\Users\{username}\AppData\Roaming\npm\node_modules'
+    at Object.realpathSync (fs.js:1561:7)
+    at Object.<anonymous> (C:\src\{projectfolder}\node_modules\is-installed-globally\index.js:8:29)
+    at Module._compile (internal/modules/cjs/loader.js:1139:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:1159:10)
+    at Module.load (internal/modules/cjs/loader.js:988:32)
+    at Function.Module._load (internal/modules/cjs/loader.js:896:14)
+    at Module.require (internal/modules/cjs/loader.js:1028:19)
+    at require (internal/modules/cjs/helpers.js:72:18)
+    at isGloballyInstalled (C:\src\{projectfolder}\node_modules\occams-conf\src\util.js:17:10)
+    at getLocatorConfigPath (C:\src\{projectfolder}\node_modules\occams-conf\src\util.js:26:6) {
+  errno: -4058,
+  syscall: 'lstat',
+  code: 'ENOENT',
+  path: 'C:\\Users\\{username}\\AppData\\Roaming\\npm\\node_modules'
+}
+```
+
+https://stackoverflow.com/questions/19874582/change-default-global-installation-directory-for-node-js-modules-in-windows
