@@ -130,7 +130,7 @@ module.exports = {
 
 ### Windows Users
 
-If and error resembling the following occurs, please check out the link below it.
+If an error resembling the following occurs, please check out the link below it.
 
 ```shell
 PS C:\src\{projectfolder}> npm start
