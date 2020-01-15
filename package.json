@@ -1,72 +1,69 @@
 {
-  "name": "occams-conf",
-  "version": "2.0.1",
-  "description": "A simple config module",
-  "license": "ISC",
-  "repository": "lxghtless/occams-conf",
-  "author": {
-    "name": "lxghtlxss",
-    "email": "lxghtl3ss@gmail.com",
-    "url": "github.com/lxghtless"
-  },
-  "engines": {
-    "node": ">=8"
-  },
-  "scripts": {
-    "test": "xo && nyc ava",
-    "test-sys": "ava 'sys-test/**/test.js' 'sys-test/**/*.test.js'",
-    "test-all": "ava 'sys-test/**/test.js' 'sys-test/**/*.test.js' 'test/**/test.js' 'test/**/*.test.js'",
-    "test-sys-with-coverage": "nyc ava 'sys-test/**/test.js' 'sys-test/**/*.test.js'",
-    "test-all-with-coverage": "nyc ava 'sys-test/**/test.js' 'sys-test/**/*.test.js' 'test/**/test.js' 'test/**/*.test.js'"
-  },
-  "files": [
-    "index.js"
-  ],
-  "keywords": [
-    "config"
-  ],
-  "dependencies": {},
-  "devDependencies": {
-    "ava": "^1.4.1",
-    "nyc": "^14.1.0",
-    "xo": "^0.24.0"
-  },
-  "xo": {
-    "plugins": [
-      "unicorn"
-    ],
-    "rules": {
-      "unicorn/filename-case": [
-        "error",
-        {
-          "case": "camelCase"
-        }
-      ],
-      "camelcase": 0,
-      "capitalized-comments": 0,
-      "ava/no-ignored-test-files": 0
-    }
-  },
-  "ava": {
-    "sources": [
-      "index.js"
-    ],
-    "cache": true,
-    "concurrency": 5,
-    "failFast": true,
-    "verbose": true
-  },
-  "nyc": {
-    "all": true,
-    "include": [
-      "index.js"
-    ],
-    "reporter": [
-      "text",
-      "lcov"
-    ]
-  },
-  "occams-conf": {
-    "name": "config.js"
-  }
+	"name": "occams-conf",
+	"version": "3.0.0-6",
+	"description": "A simple config module",
+	"license": "ISC",
+	"repository": "lxghtless/occams-conf",
+	"author": {
+		"name": "lxghtlxss",
+		"email": "lxghtl3ss@gmail.com",
+		"url": "https://github.com/lxghtless"
+	},
+	"engines": {
+		"node": ">=8"
+	},
+	"scripts": {
+		"start": "node -r dotenv/config src/index.js",
+		"test": "xo && nyc ava"
+	},
+	"main": "src/index.js",
+	"files": [
+		"src"
+	],
+	"keywords": [
+		"config"
+	],
+	"dependencies": {
+		"find-up": "^4.1.0",
+		"is-installed-globally": "^0.3.1",
+		"is-url-superb": "^3.0.0",
+		"require-from-string": "^2.0.2"
+	},
+	"devDependencies": {
+		"ava": "^2.4.0",
+		"dotenv": "^8.2.0",
+		"nock": "^11.7.0",
+		"nyc": "^14.1.1",
+		"xo": "^0.25.3"
+	},
+	"xo": {
+		"envs": [
+			"node"
+		],
+		"rules": {
+			"capitalized-comments": 0
+		}
+	},
+	"ava": {
+		"sources": [
+			"index.js"
+		],
+		"cache": true,
+		"concurrency": 5,
+		"failFast": true,
+		"verbose": true,
+		"environmentVariables": {
+			"OCCAMS_CONF_MANUAL_INIT": "true"
+		}
+	},
+	"nyc": {
+		"all": true,
+		"include": [
+			"src/**/*.js"
+		],
+		"reporter": [
+			"text",
+			"lcov"
+		]
+	}
 }

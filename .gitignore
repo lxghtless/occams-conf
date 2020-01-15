@@ -3,3 +3,5 @@ yarn.lock
 .nyc_output
 coverage
 .DS_Store
+.env
+.vscode
