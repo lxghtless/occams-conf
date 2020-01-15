@@ -1,6 +1,6 @@
 {
 	"name": "occams-conf",
-	"version": "3.0.0-6",
+	"version": "3.0.0",
 	"description": "A simple config module",
 	"license": "ISC",
 	"repository": "lxghtless/occams-conf",
